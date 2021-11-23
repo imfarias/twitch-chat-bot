@@ -33,13 +33,21 @@ export default async function handler(
         }, method: 'POST', body: getMobalyticsData(userFinal, regionFinal)
     });
 
-    const apiData : any = await data.json();
+    const apiData: any = await data.json();
 
-    if(!apiData.data || apiData.data.tft.profile[0].profile.summonerInfo) {
+    if (!apiData.data || apiData.data.tft.profile[0].profile.summonerInfo) {
         res.status(400).json({success: false, message: `Cant retrieve user data: ${userFinal}`});
     }
 
     const userRank = apiData.data.tft.profile[0].profile.rank;
 
-    res.status(200).json(JSON.stringify(`${user} - TFT: ${userRank.tier} ${userRank.division}`));
+    const tier = userRank.tier.charAt(0).toUpperCase() + userRank.tier.slice(1).toLowerCase();
+
+    const performanceRankedList = apiData.data.tft.profile[0].profile.summonerPerformance.filter((performance: any) => {
+        return performance.performance.queue === "RANKED";
+    });
+
+    const lp = performanceRankedList? `${performanceRankedList[0].performance.lp} LP` : '0 LP';
+
+    res.status(200).json(JSON.stringify(`${user} - TFT: ${tier} ${userRank.division} (${lp})`));
 }

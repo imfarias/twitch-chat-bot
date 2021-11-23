@@ -25,7 +25,7 @@ export default function getMobalyticsData(name: string, region: string) {
             "statsOverviewLimit": 5,
             "statsSectionLimit": 20,
             "withSummonerInfo": false,
-            "withSummonerPerformance": false,
+            "withSummonerPerformance": true,
             "withSummonerProgressTracking": false,
             "withOverviewSection": false,
             "withTeamCompsSection": false,
