@@ -41,5 +41,5 @@ export default async function handler(
 
     const userRank = apiData.data.tft.profile[0].profile.rank;
 
-    res.status(200).send(`${user} - TFT: ${userRank.tier} ${userRank.division}`);
+    res.status(200).json(JSON.stringify(`${user} - TFT: ${userRank.tier} ${userRank.division}`));
 }
