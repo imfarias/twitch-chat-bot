@@ -49,5 +49,5 @@ export default async function handler(
 
     const lp = performanceRankedList? `${performanceRankedList[0].performance.lp} LP` : '0 LP';
 
-    res.status(200).json(JSON.stringify(`${user} - TFT: ${tier} ${userRank.division} (${lp})`));
+    res.status(200).json(`${user} - TFT: ${tier} ${userRank.division} (${lp})`);
 }
