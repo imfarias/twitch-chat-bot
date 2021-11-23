@@ -26,7 +26,6 @@ export default async function handler(
 
     const mobalyticsUrl = process.env.MOBALYTICS_API ?? '';
 
-    console.log(getMobalyticsData(userFinal, regionFinal));
     const data = await fetch(mobalyticsUrl, {
         headers: {
             'content-type': 'application/json'
