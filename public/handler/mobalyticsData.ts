@@ -6,7 +6,7 @@ export default function getMobalyticsData(name: string, region: string) {
                 {
                     "summonerName": name,
                     "region": region,
-                    "set": process.env.MOBALYTICS_SET_API
+                    "set": process.env.TFT_SET_API
                 }
             ],
             "filterStats": {
