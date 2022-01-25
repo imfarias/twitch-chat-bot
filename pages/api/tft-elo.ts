@@ -9,7 +9,8 @@ function validaDadosPreenchidos(user: string | string[], region: string | string
     let regionFinal = region.toString().toUpperCase();
 
     const regionList = [
-        'BR'
+        'BR',
+        'NA'
     ];
 
     if (!userFinal) {
