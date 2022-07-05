@@ -54,11 +54,11 @@ export default async function handler(
 
         const placementString = lastPlacements.join(', ');
 
-        const finalPlacementString = !!disableLastPositions === true ? '' : `Last Positions: [${placementString}]`;
+        const finalPlacementString = !!disableLastPositions === true ? '' : ` Last Positions: [${placementString}]`;
 
         res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
 
-        res.status(200).json(`${user}: ${tier} ${queueRanked.rank} (${lp})\n${finalPlacementString}`);
+        res.status(200).json(`${user}: ${tier} ${queueRanked.rank} (${lp})${finalPlacementString}`);
 
     } catch (e: any) {
         res.status(400).json({success: false, message: e.message});
