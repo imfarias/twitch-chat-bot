@@ -1,8 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type {NextApiRequest, NextApiResponse} from 'next'
 import fetch from 'node-fetch';
-import getMobalyticsData from "../../public/handler/mobalyticsData";
-import updateMobalyticsData from "../../public/handler/updateMobalyticsData";
 
 function validaDadosPreenchidos(user: string | string[], region: string | string[]) {
     let userFinal = user.toString();
@@ -21,6 +19,12 @@ function validaDadosPreenchidos(user: string | string[], region: string | string
         throw new Error(`Region param is missing, available regions: ${regionList}`);
     }
 
+    switch (regionFinal) {
+        default:
+            regionFinal = 'br1';
+            break;
+    }
+
     return {userFinal, regionFinal};
 }
 
@@ -33,49 +37,34 @@ export default async function handler(
     try {
         let {userFinal, regionFinal} = validaDadosPreenchidos(user, region);
 
-        const apiUrl = process.env.TFT_API ?? '';
+        let apiUrl = process.env.TFT_API ?? '';
 
-        const dataUpdate = await fetch(apiUrl, {
-            headers: {
-                'content-type': 'application/json'
-            }, method: 'POST', body: updateMobalyticsData(userFinal, regionFinal)
-        });
-
-        const apiDataUpdate: any = await dataUpdate.json();
-
-        let isUpdating = false;
-
-        if (!apiDataUpdate.data.tft) {
-            isUpdating = true;
-        }
+        apiUrl = `${apiUrl}?player=${userFinal}&region=${regionFinal}`;
 
         const data = await fetch(apiUrl, {
             headers: {
                 'content-type': 'application/json'
-            }, method: 'POST', body: getMobalyticsData(userFinal, regionFinal)
+            },
+            method: 'GET'
         });
 
         const apiData: any = await data.json();
 
-        if (!apiData.data || apiData.data.tft.profile[0].profile.summonerInfo) {
+        if (!apiData.player_info || !apiData?.player_info?.queueRanks?.length) {
             throw new Error(`Cant retrieve user data: ${userFinal}`);
         }
 
-        const userRank = apiData.data.tft.profile[0].profile.rank;
+        const queueRanked = apiData.player_info.queueRanks.find((queue: any) => {
+            return queue.queueType === 'RANKED_TFT';
+        })
 
-        const tier = userRank.tier.charAt(0).toUpperCase() + userRank.tier.slice(1).toLowerCase();
+        const tier = queueRanked.tier.charAt(0).toUpperCase() + queueRanked.tier.slice(1).toLowerCase();
 
-        const performanceRankedList = apiData.data.tft.profile[0].profile.summonerPerformance.filter((performance: any) => {
-            return performance.performance.queue === "RANKED";
-        });
-
-        const lp = performanceRankedList ? `${performanceRankedList[0].performance.lp} LP` : '0 LP';
-
-        const isUpdatingText = isUpdating ? ' (ATUALIZANDO DADOS) ' : '';
+        const lp = queueRanked ? `${queueRanked.leaguePoints} LP` : '0 LP';
 
         res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
 
-        res.status(200).json(`${user} - TFT: ${tier} ${userRank.division} (${lp})${isUpdatingText}`);
+        res.status(200).json(`${user} - TFT: ${tier} ${queueRanked.rank} (${lp})`);
 
     } catch (e: any) {
         res.status(400).json({success: false, message: e.message});
