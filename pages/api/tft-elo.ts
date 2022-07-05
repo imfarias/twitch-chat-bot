@@ -73,6 +73,8 @@ export default async function handler(
 
         const isUpdatingText = isUpdating ? ' (ATUALIZANDO DADOS) ' : '';
 
+        res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
+
         res.status(200).json(`${user} - TFT: ${tier} ${userRank.division} (${lp})${isUpdatingText}`);
 
     } catch (e: any) {
