@@ -36,7 +36,7 @@ export default async function handler(
     const {user, region, disableLastPositions} = req.query;
 
     try {
-        let {userFinal, apiData} = await getApiData(user, region);
+        let {userFinal, apiData} = await getApiData(`${user}`, `${region}`);
 
         if (!apiData.player_info || !apiData?.player_info?.queueRanks?.length) {
             throw new Error(`Cant retrieve user data: ${userFinal}`);
