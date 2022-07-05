@@ -54,7 +54,7 @@ export default async function handler(
 
         const finalPlacementString = !!disableLastPositions === true ? '' : ` Last Positions: [${placementString}]`;
 
-        res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
+        res.setHeader('Cache-Control', 's-maxage=180, stale-while-revalidate');
 
         res.status(200).json(`${user}: ${tier} ${apiData.playerInfo.rank} (${lp})${finalPlacementString}`);
 
