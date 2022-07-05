@@ -31,7 +31,7 @@ export async function getApiData(user: string, region: string) {
 
     let apiUrl = process.env.TFT_API ?? '';
 
-    apiUrl = `${apiUrl}?player=${userFinal}&region=${regionFinal}`;
+    apiUrl = `${apiUrl}/${regionFinal}/${userFinal}/70/50`;
 
     const data = await fetch(apiUrl, {
         headers: {

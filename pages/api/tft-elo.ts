@@ -38,19 +38,17 @@ export default async function handler(
     try {
         let {userFinal, apiData} = await getApiData(`${user}`, `${region}`);
 
-        if (!apiData.player_info || !apiData?.player_info?.queueRanks?.length) {
+        if (!apiData.playerInfo || !apiData?.matches?.length) {
             throw new Error(`Cant retrieve user data: ${userFinal}`);
         }
 
-        const queueRanked = apiData.player_info.queueRanks.find((queue: any) => {
-            return queue.queueType === 'RANKED_TFT';
-        })
+        const tier = apiData.playerInfo.tier.charAt(0).toUpperCase() + apiData.playerInfo.tier.slice(1).toLowerCase();
 
-        const tier = queueRanked.tier.charAt(0).toUpperCase() + queueRanked.tier.slice(1).toLowerCase();
+        const lp = apiData.playerInfo ? `${apiData.playerInfo.leaguePoints} LP` : '0 LP';
 
-        const lp = queueRanked ? `${queueRanked.leaguePoints} LP` : '0 LP';
-
-        const lastPlacements = apiData.matches_overview.placements.splice(0, 5);
+        const lastPlacements = apiData.matches.splice(0, 5).map((match: any) => {
+            return match.info.placement;
+        });
 
         const placementString = lastPlacements.join(', ');
 
@@ -58,7 +56,7 @@ export default async function handler(
 
         res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
 
-        res.status(200).json(`${user}: ${tier} ${queueRanked.rank} (${lp})${finalPlacementString}`);
+        res.status(200).json(`${user}: ${tier} ${apiData.playerInfo.rank} (${lp})${finalPlacementString}`);
 
     } catch (e: any) {
         res.status(400).json({success: false, message: e.message});
