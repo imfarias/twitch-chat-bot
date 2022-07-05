@@ -37,7 +37,7 @@ export default function getMobalyticsData(name: string, region: string) {
         "extensions": {
             "persistedQuery": {
                 "version": 1,
-                "sha256Hash": "e260b17991a2698d76387796a5921f09043f4cedae08884843c918418c9dbbfd"
+                "sha256Hash": "90e8844a1548f7a89351044039fab89507eaa03362ff05ec62cbb23567864245"
             }
         }
     });
