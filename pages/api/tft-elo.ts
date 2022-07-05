@@ -64,7 +64,7 @@ export default async function handler(
 
         res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
 
-        res.status(200).json(`${user} - TFT: ${tier} ${queueRanked.rank} (${lp})`);
+        res.status(200).json(`${user}: ${tier} ${queueRanked.rank} (${lp})`);
 
     } catch (e: any) {
         res.status(400).json({success: false, message: e.message});
