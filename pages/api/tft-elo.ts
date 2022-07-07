@@ -33,7 +33,8 @@ export default async function handler(
         res.status(200).json(`${user}: ${tier} ${apiData.playerInfo.rank} (${lp})${finalPlacementString}`);
 
     } catch (e: any) {
-        res.status(400).json({success: false, message: e.message});
+        console.error(e.message);
+        res.status(200).json("Tivemos um problema para buscar os dados da API da RIOT.");
     }
 
 }
